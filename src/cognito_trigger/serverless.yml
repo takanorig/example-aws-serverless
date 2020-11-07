@@ -55,9 +55,9 @@ functions:
           trigger: PostConfirmation
           existing: true
 
-  trigger_post_authentication_hander:
+  trigger_post_authentication:
     handler: cognito_trigger_handler.post_authentication_handler
-    description: Cognito Trigger Procedure for PostConfirmation
+    description: Cognito Trigger Procedure for Authentication
     events:
       - cognitoUserPool:
           pool: ${self:custom.cognito.userPool}
