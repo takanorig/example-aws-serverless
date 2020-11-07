@@ -40,6 +40,7 @@ Default output format [None]: json
 Pyenvを利用して、Python3.8.0をインストールする。
 
 ```
+$ cd example-aws-serverless
 $ pyenv install 3.8.0
 $ pyenv local 3.8.0
 $ pyenv rehash
@@ -64,6 +65,7 @@ $ poetry config virtualenvs.in-project true
 Python仮想環境にて、Poeryを利用して関連モジュールをインストールする。
 
 ```
+$ cd example-aws-serverless
 $ poetry install
 ```
 
@@ -92,21 +94,33 @@ $ npm update -g serverless
 関連モジュールをインストールする。
 
 ```
+$ cd example-aws-serverless
 $ npm install
 ```
 
 ## Deploy
 
 依存モジュールが更新されている場合は、以下の手順で requirements.txt を更新する。
-**この時、改行コードをLFにすること。でないとCodeBuildで失敗する。**
+- Windowsなどの場合は、改行コードをLFにすること。そうでないとデプロイ時に失敗する。
 
 ```
+$ cd example-aws-serverless
 $ poetry export -f requirements.txt > requirements.txt
 $ move ./requirements.txt ./src/
+```
+
+予め、共通的なリソースをデプロイする。
+- 更新がない限りは、一度デプロイされていれば良い。
+
+```
+cd ./src/resources
+$ sls deploy --stage {stage} --region {region} --profile {your-profile} --config serverless-lamdalayers.yml
+$ sls deploy --stage {stage} --region {region} --profile {your-profile} --config serverless-cognito.yml
 ```
 
 その上で、各サービスごとに Severless Famework を利用してデプロイを行う。
 
 ```
+$ cd ./src/{service}
 $ sls deploy --profile {your-profile}
 ```

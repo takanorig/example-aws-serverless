@@ -1,0 +1,42 @@
+# Deploy Lamda Layers
+#
+# > sls deploy --stage {stage} --region {region} --profile {profile} --config serverless-lamdalayers.yml
+
+service: example-serverless-requirements-layer
+
+plugins:
+  - serverless-deployment-bucket
+  - serverless-python-requirements
+
+custom:
+  # serverless-python-requirements
+  pythonRequirements:
+    fileName: ../requirements.txt
+    layer:
+      name: example-serverless-requirements-packages
+      compatibleRuntimes:
+        - python3.8
+    noDeploy:
+      - moto
+      - pytest
+      - nose
+      - flake8
+      - coverage
+    usePoetry: false
+    ### If you deploy on Windows.
+    # dockerizePip: true
+    # dockerEnv:
+    #   - https_proxy
+    #   - https_proxy
+    ### If you use customs config.
+    # environment: ${file(../customs/${opt:stage, 'dev'}.yml)}
+
+provider:
+  name: aws
+  deploymentBucket:
+    name: slsdeploy-${self:service}-${self:provider.stage}
+  ### If you use customs config.
+  # runtime: ${self:custom.environment.runtime}
+  # stage: ${opt:stage, 'dev'}
+  # region: ${self:custom.environment.deployRegion}
+  # profile: ${self:custom.environment.profile}

@@ -4,6 +4,7 @@
     "description": "",
     "author": "",
     "dependencies": {
+        "serverless-deployment-bucket": "1.2.0",
         "serverless-prune-plugin": "1.4.3",
         "serverless-python-requirements": "5.1.0"
     }

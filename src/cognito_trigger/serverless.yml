@@ -1,0 +1,65 @@
+custom: ${file(../customs/${opt:stage, 'dev'}.yml)}
+
+service: cognito-trigger
+
+provider:
+  name: aws
+  runtime: ${self:custom.runtime}
+  stage: ${opt:stage, 'dev'}
+  region: ${self:custom.deployRegion}
+  profile: ${self:custom.profile}
+  deploymentBucket:
+    name: slsdeploy-${self:service}-${self:provider.stage}
+  logRetentionInDays: ${self:custom.properties.retentionInDays}
+  timeout: 30
+  memorySize: 256
+  logs:
+    restApi: true
+    accessLogging: true
+    executionLogging: true
+    level: ALL
+  tracing:
+    apiGateway: true
+    lambda: true
+  iamRoleStatements:
+    - Effect: "Allow"
+      Resource: "*"
+      Action:
+        - "lambda:InvokeFunction"
+        - "xray:PutTraceSegments"
+        - "xray:PutTelemetryRecords"
+
+package:
+  # include:
+  #   - ../common/**
+  exclude:
+    - tests/**
+    - nosetests.xml
+    - coverage.xml
+    - nose.cfg
+    - .coverage
+
+plugins:
+  - serverless-deployment-bucket
+  - serverless-prune-plugin
+  - serverless-python-requirements
+
+# 関数定義
+functions:
+  trigger_post_confirmation:
+    handler: cognito_trigger_handler.post_confirmation_handler
+    description: Cognito Trigger Procedure for PostConfirmation
+    events:
+      - cognitoUserPool:
+          pool: ${self:custom.cognito.userPool}
+          trigger: PostConfirmation
+          existing: true
+
+  trigger_post_authentication_hander:
+    handler: cognito_trigger_handler.post_authentication_handler
+    description: Cognito Trigger Procedure for PostConfirmation
+    events:
+      - cognitoUserPool:
+          pool: ${self:custom.cognito.userPool}
+          trigger: PostAuthentication
+          existing: true

@@ -1,6 +1,7 @@
 # provider
 deployRegion: us-west-2
 profile: takanorig
+runtime: python3.8
 
 # properties
 properties:
@@ -14,3 +15,7 @@ pythonRequirements:
 prune:
   automatic: true
   number: 3
+
+# Cognito settings
+cognito:
+  userPool: example-serverless-cognito-dev-pool
