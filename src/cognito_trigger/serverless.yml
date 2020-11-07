@@ -57,7 +57,7 @@ functions:
 
   trigger_post_authentication:
     handler: cognito_trigger_handler.post_authentication_handler
-    description: Cognito Trigger Procedure for Authentication
+    description: Cognito Trigger Procedure for PostAuthentication
     events:
       - cognitoUserPool:
           pool: ${self:custom.cognito.userPool}
